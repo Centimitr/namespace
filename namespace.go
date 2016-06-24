@@ -15,26 +15,26 @@ type scope struct {
 }
 
 func (n *namespace) Apply(scopeName string) (ok bool, _ scope) {
-	if ok, _ := n.scopes[scopeName]; !ok {
+	if _, ok := n.scopes[scopeName]; !ok {
 		n.scopes[scopeName] = scope{
 			name:              scopeName,
 			namespace:         n,
 			UseDefaultGetRule: true,
 		}
-		return true, n.scopes[scope]
+		return true, n.scopes[scopeName]
 	}
-	return false, nil
+	return false, scope{}
 }
 
 func (n *namespace) Use(scopeName string) scope {
-	if ok, _ := n.scopes[scopeName]; !ok {
+	if _, ok := n.scopes[scopeName]; !ok {
 		n.scopes[scopeName] = scope{
 			name:              scopeName,
 			namespace:         n,
 			UseDefaultGetRule: true,
 		}
 	}
-	return n.scopes[scope]
+	return n.scopes[scopeName]
 }
 
 func (n *namespace) SetGetRule(fn func(string, string) string) {
@@ -55,18 +55,18 @@ func (s *scope) Get(name string) string {
 }
 
 func (n *namespace) DirectGet(scope, name string) string {
-	if ok, s := n.scopes[scope]; ok {
+	if s, ok := n.scopes[scope]; ok {
 		return s.getRule(scope, name)
 	} else {
 		return n.getRule(scope, name)
 	}
 }
 
-func New() {
+func New() namespace {
 	return namespace{
 		scopes: make(map[string]scope),
-		getRule: func(string, string) string {
-			return string + '.' + string
+		getRule: func(scope, name string) string {
+			return scope + "." + name
 		},
 	}
 }
