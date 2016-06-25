@@ -16,7 +16,7 @@ package namespace
 
 type Namespace struct {
 	scopes  map[string]Scope
-	getRule func(scope, name string) string
+	ruleOfGet func(scope, name string) string
 }
 
 type Scope struct {
@@ -24,8 +24,8 @@ type Scope struct {
 	name string
 	// the namespace it belongs to
 	namespace         *Namespace
-	getRule           func(scope, name string) string
-	UseDefaultGetRule bool
+	ruleOfGet           func(scope, name string) string
+	UseDefaultRuleOfGet bool
 }
 
 func (n *Namespace) Apply(scopeName string) (ok bool, _ Scope) {
@@ -33,7 +33,7 @@ func (n *Namespace) Apply(scopeName string) (ok bool, _ Scope) {
 		n.scopes[scopeName] = Scope{
 			name:              scopeName,
 			namespace:         n,
-			UseDefaultGetRule: true,
+			UseDefaultRuleOfGet: true,
 		}
 		return true, n.scopes[scopeName]
 	}
@@ -45,40 +45,40 @@ func (n *Namespace) Use(scopeName string) Scope {
 		n.scopes[scopeName] = Scope{
 			name:              scopeName,
 			namespace:         n,
-			UseDefaultGetRule: true,
+			UseDefaultRuleOfGet: true,
 		}
 	}
 	return n.scopes[scopeName]
 }
 
 func (n *Namespace) SetGetRule(fn func(string, string) string) {
-	n.getRule = fn
+	n.ruleOfGet = fn
 }
 
 func (s *Scope) SetGetRule(fn func(string, string) string) {
-	s.UseDefaultGetRule = false
-	s.getRule = fn
+	s.UseDefaultRuleOfGet = false
+	s.ruleOfGet = fn
 }
 
 func (s *Scope) Get(name string) string {
-	if s.UseDefaultGetRule {
-		return s.namespace.getRule(s.name, name)
+	if s.UseDefaultRuleOfGet {
+		return s.namespace.ruleOfGet(s.name, name)
 	} else {
-		return s.getRule(s.name, name)
+		return s.ruleOfGet(s.name, name)
 	}
 }
 
 func (n *Namespace) DirectGet(scope, name string) string {
 	if s, ok := n.scopes[scope]; ok {
-		return s.getRule(scope, name)
+		return s.ruleOfGet(scope, name)
 	} else {
-		return n.getRule(scope, name)
+		return n.ruleOfGet(scope, name)
 	}
 }
 
 func (n *Namespace) Init() {
 	n.scopes = make(map[string]Scope)
-	n.getRule = func(scope, name string) string {
+	n.ruleOfGet = func(scope, name string) string {
 		return scope + "." + name
 	}
 }
@@ -86,7 +86,7 @@ func (n *Namespace) Init() {
 func New() Namespace {
 	return Namespace{
 		scopes: make(map[string]Scope),
-		getRule: func(scope, name string) string {
+		ruleOfGet: func(scope, name string) string {
 			return scope + "." + name
 		},
 	}
