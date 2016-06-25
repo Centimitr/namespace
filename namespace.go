@@ -15,7 +15,7 @@
 package namespace
 
 type Namespace struct {
-	scopes  map[string]scope
+	scopes  map[string]Scope
 	getRule func(scope, name string) string
 }
 
@@ -55,12 +55,12 @@ func (n *Namespace) SetGetRule(fn func(string, string) string) {
 	n.getRule = fn
 }
 
-func (s *scope) SetGetRule(fn func(string, string) string) {
+func (s *Scope) SetGetRule(fn func(string, string) string) {
 	s.UseDefaultGetRule = false
 	s.getRule = fn
 }
 
-func (s *scope) Get(name string) string {
+func (s *Scope) Get(name string) string {
 	if s.UseDefaultGetRule {
 		return s.namespace.getRule(s.name, name)
 	} else {
