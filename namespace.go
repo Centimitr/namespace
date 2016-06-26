@@ -1,4 +1,4 @@
-// Copyright 2016 Cyako Author
+// Copyright 2016 Centimitr
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 package namespace
 
 type Namespace struct {
-	scopes  map[string]Scope
+	scopes    map[string]Scope
 	ruleOfGet func(scope, name string) string
 }
 
@@ -23,16 +23,17 @@ type Scope struct {
 	// scope's name
 	name string
 	// the namespace it belongs to
-	namespace         *Namespace
+	namespace           *Namespace
 	ruleOfGet           func(scope, name string) string
 	UseDefaultRuleOfGet bool
 }
 
+// try to use a prefix that haven't been used yet, and get the scope
 func (n *Namespace) Apply(scopeName string) (ok bool, _ Scope) {
 	if _, ok := n.scopes[scopeName]; !ok {
 		n.scopes[scopeName] = Scope{
-			name:              scopeName,
-			namespace:         n,
+			name:                scopeName,
+			namespace:           n,
 			UseDefaultRuleOfGet: true,
 		}
 		return true, n.scopes[scopeName]
@@ -40,17 +41,19 @@ func (n *Namespace) Apply(scopeName string) (ok bool, _ Scope) {
 	return false, Scope{}
 }
 
+// get the scope with specific prefix, apply if it is not exist
 func (n *Namespace) Use(scopeName string) Scope {
 	if _, ok := n.scopes[scopeName]; !ok {
 		n.scopes[scopeName] = Scope{
-			name:              scopeName,
-			namespace:         n,
+			name:                scopeName,
+			namespace:           n,
 			UseDefaultRuleOfGet: true,
 		}
 	}
 	return n.scopes[scopeName]
 }
 
+// how to concat prefix and string
 func (n *Namespace) SetGetRule(fn func(string, string) string) {
 	n.ruleOfGet = fn
 }
@@ -60,6 +63,7 @@ func (s *Scope) SetGetRule(fn func(string, string) string) {
 	s.ruleOfGet = fn
 }
 
+// generate key string with namespace\scope and string
 func (s *Scope) Get(name string) string {
 	if s.UseDefaultRuleOfGet {
 		return s.namespace.ruleOfGet(s.name, name)
@@ -76,6 +80,7 @@ func (n *Namespace) DirectGet(scope, name string) string {
 	}
 }
 
+// init maps and ruleOfGet functions
 func (n *Namespace) Init() {
 	n.scopes = make(map[string]Scope)
 	n.ruleOfGet = func(scope, name string) string {
