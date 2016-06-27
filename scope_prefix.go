@@ -27,7 +27,7 @@ func (s *ScopePrefix) Extend(extname string) (bool, ScopePrefix) {
 	return false, ScopePrefix{}
 }
 
-func (s *ScopePrefix) Apply(name string) (bool, ScopePrefix) {
+func (s *ScopePrefix) Apply(name string) (bool, Scope) {
 	if ok, scope := s.namespace.Apply(s.namespace.ruleOfPrefixConcat(s.name, name)); ok {
 		return true, scope
 	}
