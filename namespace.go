@@ -15,17 +15,10 @@
 package namespace
 
 type Namespace struct {
-	scopes    map[string]Scope
-	ruleOfGet func(scope, name string) string
-}
-
-type Scope struct {
-	// scope's name
-	name string
-	// the namespace it belongs to
-	namespace           *Namespace
-	ruleOfGet           func(scope, name string) string
-	UseDefaultRuleOfGet bool
+	scopes             map[string]Scope
+	scopePrefixes      map[string]ScopePrefix
+	ruleOfGet          func(scope, name string) string
+	ruleOfPrefixConcat func(prefix, extprefix string) string
 }
 
 // try to use a prefix that haven't been used yet, and get the scope
@@ -58,20 +51,6 @@ func (n *Namespace) SetGetRule(fn func(string, string) string) {
 	n.ruleOfGet = fn
 }
 
-func (s *Scope) SetGetRule(fn func(string, string) string) {
-	s.UseDefaultRuleOfGet = false
-	s.ruleOfGet = fn
-}
-
-// generate key string with namespace\scope and string
-func (s *Scope) Get(name string) string {
-	if s.UseDefaultRuleOfGet {
-		return s.namespace.ruleOfGet(s.name, name)
-	} else {
-		return s.ruleOfGet(s.name, name)
-	}
-}
-
 func (n *Namespace) DirectGet(scope, name string) string {
 	if s, ok := n.scopes[scope]; ok {
 		return s.ruleOfGet(scope, name)
@@ -83,16 +62,28 @@ func (n *Namespace) DirectGet(scope, name string) string {
 // init maps and ruleOfGet functions
 func (n *Namespace) Init() {
 	n.scopes = make(map[string]Scope)
+	n.scopePrefixes = make(map[string]ScopePrefix)
 	n.ruleOfGet = func(scope, name string) string {
+		return scope + ":" + name
+	}
+	n.ruleOfPrefixConcat = func(scope, name string) string {
 		return scope + "." + name
 	}
 }
 
-func New() Namespace {
-	return Namespace{
-		scopes: make(map[string]Scope),
-		ruleOfGet: func(scope, name string) string {
-			return scope + "." + name
-		},
+func (n *Namespace) NewPrefix(name string) (ok bool, _ ScopePrefix) {
+	if _, ok := n.scopePrefixes[name]; !ok {
+		n.scopePrefixes[name] = ScopePrefix{
+			name:      name,
+			namespace: n,
+		}
+		return true, n.scopePrefixes[name]
 	}
+	return false, ScopePrefix{}
+}
+
+func New() Namespace {
+	ns := Namespace{}
+	ns.Init()
+	return ns
 }
