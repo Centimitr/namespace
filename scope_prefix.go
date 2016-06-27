@@ -14,21 +14,41 @@
 
 package namespace
 
+import "fmt"
+
 type ScopePrefix struct {
-	name string
+	names []string
 	// the namespace it belongs to
 	namespace *Namespace
 }
 
-func (s *ScopePrefix) Extend(extname string) (bool, ScopePrefix) {
-	if ok, prefix := s.namespace.NewPrefix(s.namespace.ruleOfPrefixConcat(s.name, extname)); ok {
+func getPrefixNamesKey(names []string) string {
+	return fmt.Sprint("%+v", names)
+}
+
+func stringArrayCopyConcat(a1, a2 []string) []string {
+	a := []string{}
+	for _, item := range a1 {
+		a = append(a, item)
+	}
+	for _, item := range a2 {
+		a = append(a, item)
+	}
+	return a
+}
+
+func (s *ScopePrefix) Extend(extnames ...string) (bool, ScopePrefix) {
+	names := stringArrayCopyConcat(s.names, extnames)
+	if ok, prefix := s.namespace.NewPrefix(names...); ok {
 		return true, prefix
 	}
 	return false, ScopePrefix{}
 }
 
-func (s *ScopePrefix) Apply(name string) (bool, Scope) {
-	if ok, scope := s.namespace.Apply(s.namespace.ruleOfPrefixConcat(s.name, name)); ok {
+func (s *ScopePrefix) Apply(extnames ...string) (bool, Scope) {
+	names := stringArrayCopyConcat(s.names, extnames)
+	prefix := s.namespace.ruleOfPrefixConcat(names...)
+	if ok, scope := s.namespace.Apply(prefix); ok {
 		return true, scope
 	}
 	return false, Scope{}
