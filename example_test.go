@@ -7,9 +7,10 @@ import (
 
 func Example() {
 	n := ns.New()
-	_, p := n.NewPrefix("SERVICE", "NS")
-	_, p = prefixOfService.Extend("REALTIME", "GET")
-	_, s := prefixOfRealtime.Apply("get")
-	key := s.Get("123")
+	_, p := n.NewPrefix("SERVICE", "KVSTORE")
+	_, p = p.Extend("REALTIME")
+	_, p = p.Extend("LISTENER_LIST")
+	_, s := p.Apply("LISTENERS")
+	key := s.Get("User")
 	fmt.Println(key)
 }
