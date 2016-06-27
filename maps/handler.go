@@ -12,20 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package namespace
+package maps
 
-type MapScopePrefix struct {
-	m         *Map
-	namespace *MapNamespace
-	ScopePrefix
+type MapHandler struct {
+	key string
+	m   *Map
 }
 
-func (this *MapScopePrefix) Extend(extnames ...string) (bool, MapScopePrefix) {
-	ok, prefix := this.ScopePrefix.Extend(extnames...)
-	return ok, MapScopePrefix{namespace: this.namespace, ScopePrefix: prefix}
+func (this *MapHandler) Has() bool {
+	return this.m.has(this.key)
 }
 
-func (this *MapScopePrefix) Apply(extnames ...string) (bool, MapScope) {
-	ok, scope := this.ScopePrefix.Apply(extnames...)
-	return ok, MapScope{m: this.m, Scope: scope}
+func (this *MapHandler) Get() (interface{}, bool) {
+	return this.m.get(this.key)
+}
+
+func (this *MapHandler) MustGet() interface{} {
+	return this.m.mustGet(this.key)
+}
+
+func (this *MapHandler) Set(value interface{}) {
+	this.m.set(this.key, value)
+}
+
+func (this *MapHandler) Delete() {
+	this.m.delete(this.key)
 }

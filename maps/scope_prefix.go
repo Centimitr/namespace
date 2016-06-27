@@ -12,29 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package namespace
+package maps
 
-type MapHandler struct {
-	key string
-	m   *Map
+import (
+	. "github.com/Centimitr/namespace"
+)
+
+type MapScopePrefix struct {
+	m         *Map
+	namespace *MapNamespace
+	ScopePrefix
 }
 
-func (this *MapHandler) Has() bool {
-	return this.m.has(this.key)
+func (this *MapScopePrefix) Extend(extnames ...string) (bool, MapScopePrefix) {
+	ok, prefix := this.ScopePrefix.Extend(extnames...)
+	return ok, MapScopePrefix{m: this.m, namespace: this.namespace, ScopePrefix: prefix}
 }
 
-func (this *MapHandler) Get() (interface{}, bool) {
-	return this.m.get(this.key)
-}
-
-func (this *MapHandler) MustGet() interface{} {
-	return this.m.mustGet(this.key)
-}
-
-func (this *MapHandler) Set(value interface{}) {
-	this.m.set(this.key, value)
-}
-
-func (this *MapHandler) Delete() {
-	this.m.delete(this.key)
+func (this *MapScopePrefix) Apply(extnames ...string) (bool, MapScope) {
+	ok, scope := this.ScopePrefix.Apply(extnames...)
+	return ok, MapScope{m: this.m, Scope: scope}
 }
