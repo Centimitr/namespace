@@ -16,8 +16,7 @@ package namespace
 
 type Interface interface {
 	Has(key string) bool
-	Get(key string) (interface{}, bool)
-	MustGet(key string) interface{}
+	Get(key string) interface{}
 	Set(key string, value interface{})
 	Delete(key string)
 }
@@ -31,12 +30,8 @@ func (h *Handler) Has() bool {
 	return h.Interface.Has(h.key)
 }
 
-func (h *Handler) Get() (interface{}, bool) {
+func (h *Handler) Get() interface{} {
 	return h.Interface.Get(h.key)
-}
-
-func (h *Handler) MustGet() interface{} {
-	return h.Interface.MustGet(h.key)
 }
 
 func (h *Handler) Set(value interface{}) {

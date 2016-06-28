@@ -1,7 +1,7 @@
 // Copyright 2016 Centimitr
 
 // Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
+// you may not use m file except in compliance with the License.
 // You may obtain a copy of the License at
 
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -18,29 +18,24 @@ type Map struct {
 	m map[string]interface{}
 }
 
-func (this *Map) Has(key string) bool {
-	_, ok := this.m[key]
+func (m *Map) Has(key string) bool {
+	_, ok := m.m[key]
 	return ok
 }
 
-func (this *Map) Get(key string) (interface{}, bool) {
-	value, ok := this.m[key]
-	return value, ok
-}
-
-func (this *Map) MustGet(key string) interface{} {
-	value, _ := this.m[key]
+func (m *Map) Get(key string) interface{} {
+	value, _ := m.m[key]
 	return value
 }
 
-func (this *Map) Set(key string, value interface{}) {
-	this.m[key] = value
+func (m *Map) Set(key string, value interface{}) {
+	m.m[key] = value
 }
 
-func (this *Map) Delete(key string) {
-	delete(this.m, key)
+func (m *Map) Delete(key string) {
+	delete(m.m, key)
 }
 
-func (this *Map) Init() {
-	this.m = make(map[string]interface{})
+func (m *Map) Init() {
+	m.m = make(map[string]interface{})
 }

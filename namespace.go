@@ -19,17 +19,17 @@ import (
 )
 
 type Namespace struct {
-	scopes             map[string]Scope
-	Prefixes           map[string]Prefix
-	ruleOfGet          func(scope, name string) string
-	ruleOfPrefixConcat func(prefixes ...string) string
+	scopes           map[string]Scope
+	prefixes         map[string]Prefix
+	keyConcatRule    func(scope, name string) string
+	prefixConcatRule func(prefixes ...string) string
 	// a kv like structs like map that this namespace bind to
 	binding Interface
 }
 
 func (n *Namespace) hasNoConflict(scopeName string) bool {
-	for _, scope := range n.scopes {
-		if scope.name == scopeName {
+	for _, s := range n.scopes {
+		if strings.HasPrefix(s.name, scopeName) || strings.HasPrefix(scopeName, s.name) {
 			return false
 		}
 	}
@@ -38,9 +38,9 @@ func (n *Namespace) hasNoConflict(scopeName string) bool {
 
 func (n *Namespace) assignNewScope(scopeName string) {
 	n.scopes[scopeName] = Scope{
-		name:                scopeName,
-		namespace:           n,
-		UseDefaultRuleOfGet: true,
+		name:      scopeName,
+		namespace: n,
+		// UseDefaultRuleOfGet: true,
 	}
 }
 
@@ -65,38 +65,34 @@ func (n *Namespace) Use(scopeName string) (ok bool, _ Scope) {
 }
 
 // how to concat prefix and string
-func (n *Namespace) SetGetRule(fn func(string, string) string) {
-	n.ruleOfGet = fn
+func (n *Namespace) SetKeyConcatRule(fn func(string, string) string) {
+	n.keyConcatRule = fn
 }
 
-func (n *Namespace) DirectGet(scope, name string) string {
-	if s, ok := n.scopes[scope]; ok {
-		return s.ruleOfGet(scope, name)
-	} else {
-		return n.ruleOfGet(scope, name)
-	}
+func (n *Namespace) SetPrefixConcatRule(fn func(...string) string) {
+	n.prefixConcatRule = fn
 }
 
-// init maps and ruleOfGet functions
+// init maps and keyConcatRule functions
 func (n *Namespace) Init() {
 	n.scopes = make(map[string]Scope)
-	n.Prefixes = make(map[string]Prefix)
-	n.ruleOfGet = func(scope, name string) string {
+	n.prefixes = make(map[string]Prefix)
+	n.keyConcatRule = func(scope, name string) string {
 		return scope + ":" + name
 	}
-	n.ruleOfPrefixConcat = func(names ...string) string {
+	n.prefixConcatRule = func(names ...string) string {
 		return strings.Join(names, ".")
 	}
 }
 
 func (n *Namespace) Prefix(names ...string) (ok bool, _ Prefix) {
 	key := getPrefixNamesKey(names)
-	if _, ok := n.Prefixes[key]; !ok {
-		n.Prefixes[key] = Prefix{
+	if _, ok := n.prefixes[key]; !ok {
+		n.prefixes[key] = Prefix{
 			names:     names,
 			namespace: n,
 		}
-		return true, n.Prefixes[key]
+		return true, n.prefixes[key]
 	}
 	return false, Prefix{}
 }

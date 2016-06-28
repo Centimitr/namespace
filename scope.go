@@ -18,23 +18,12 @@ type Scope struct {
 	// scope's name
 	name string
 	// the namespace it belongs to
-	namespace           *Namespace
-	ruleOfGet           func(scope, name string) string
-	UseDefaultRuleOfGet bool
-}
-
-func (s *Scope) SetGetRule(fn func(string, string) string) {
-	s.UseDefaultRuleOfGet = false
-	s.ruleOfGet = fn
+	namespace *Namespace
 }
 
 // generate key string with namespace\scope and string
-func (s *Scope) Get(name string) string {
-	if s.UseDefaultRuleOfGet {
-		return s.namespace.ruleOfGet(s.name, name)
-	} else {
-		return s.ruleOfGet(s.name, name)
-	}
+func (s *Scope) Key(name string) string {
+	return s.namespace.keyConcatRule(s.name, name)
 }
 
 func (s *Scope) Handler(name string) Handler {

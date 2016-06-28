@@ -11,7 +11,7 @@ func ExampleApply() {
 	_, p = p.Extend("REALTIME")
 	_, p = p.Extend("LISTENER_LIST")
 	_, s := p.Apply("LISTENERS")
-	key := s.Get("User")
+	key := s.Key("User")
 	fmt.Println(key)
 }
 
@@ -25,6 +25,6 @@ func ExampleHandler() {
 	n.Bind(&m)
 	h := s.Handler("hobby")
 	h.Set("girl")
-	v := h.MustGet()
-	fmt.Println(s.Get("hobby"), v)
+	v := h.Get()
+	fmt.Println(s.Key("hobby"), v)
 }

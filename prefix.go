@@ -37,18 +37,18 @@ func stringArrayCopyConcat(a1, a2 []string) []string {
 	return a
 }
 
-func (s *Prefix) Extend(extnames ...string) (bool, Prefix) {
-	names := stringArrayCopyConcat(s.names, extnames)
-	if ok, prefix := s.namespace.Prefix(names...); ok {
+func (p *Prefix) Extend(extnames ...string) (bool, Prefix) {
+	names := stringArrayCopyConcat(p.names, extnames)
+	if ok, prefix := p.namespace.Prefix(names...); ok {
 		return true, prefix
 	}
 	return false, Prefix{}
 }
 
-func (s *Prefix) Apply(extnames ...string) (bool, Scope) {
-	names := stringArrayCopyConcat(s.names, extnames)
-	prefix := s.namespace.ruleOfPrefixConcat(names...)
-	if ok, scope := s.namespace.Apply(prefix); ok {
+func (p *Prefix) Apply(extnames ...string) (bool, Scope) {
+	names := stringArrayCopyConcat(p.names, extnames)
+	prefix := p.namespace.prefixConcatRule(names...)
+	if ok, scope := p.namespace.Apply(prefix); ok {
 		return true, scope
 	}
 	return false, Scope{}
