@@ -5,9 +5,9 @@ import (
 	ns "github.com/Centimitr/namespace"
 )
 
-func Example() {
+func ExampleApply() {
 	n := ns.New()
-	_, p := n.NewPrefix("SERVICE", "KVSTORE")
+	_, p := n.Prefix("SERVICE", "KVSTORE")
 	_, p = p.Extend("REALTIME")
 	_, p = p.Extend("LISTENER_LIST")
 	_, s := p.Apply("LISTENERS")
@@ -17,7 +17,7 @@ func Example() {
 
 func ExampleHandler() {
 	n := ns.New()
-	_, p := n.NewPrefix("SERVICE")
+	_, p := n.Prefix("SERVICE")
 	_, p = p.Extend("KVSTORE", "USERS")
 	_, s := p.Apply("Centimitr")
 	m := ns.Map{}
@@ -26,5 +26,5 @@ func ExampleHandler() {
 	h := s.Handler("hobby")
 	h.Set("girl")
 	v := h.MustGet()
-	fmt.Println(v)
+	fmt.Println(s.Get("hobby"), v)
 }
