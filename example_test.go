@@ -14,3 +14,17 @@ func Example() {
 	key := s.Get("User")
 	fmt.Println(key)
 }
+
+func ExampleHandler() {
+	n := ns.New()
+	_, p := n.NewPrefix("SERVICE")
+	_, p = p.Extend("KVSTORE", "USERS")
+	_, s := p.Apply("Centimitr")
+	m := ns.Map{}
+	m.Init()
+	n.Bind(&m)
+	h := s.Handler("hobby")
+	h.Set("girl")
+	v := h.MustGet()
+	fmt.Println(v)
+}

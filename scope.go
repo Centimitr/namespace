@@ -36,3 +36,13 @@ func (s *Scope) Get(name string) string {
 		return s.ruleOfGet(s.name, name)
 	}
 }
+
+func (s *Scope) Handler(name string) Handler {
+	if s.namespace.binding == nil {
+		panic("Namespace hasn't have a binding yet.")
+	}
+	return Handler{
+		key:       name,
+		Interface: s.namespace.binding,
+	}
+}

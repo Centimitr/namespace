@@ -16,7 +16,7 @@ package namespace
 
 import "fmt"
 
-type ScopePrefix struct {
+type Prefix struct {
 	names []string
 	// the namespace it belongs to
 	namespace *Namespace
@@ -37,15 +37,15 @@ func stringArrayCopyConcat(a1, a2 []string) []string {
 	return a
 }
 
-func (s *ScopePrefix) Extend(extnames ...string) (bool, ScopePrefix) {
+func (s *Prefix) Extend(extnames ...string) (bool, Prefix) {
 	names := stringArrayCopyConcat(s.names, extnames)
-	if ok, prefix := s.namespace.NewPrefix(names...); ok {
+	if ok, prefix := s.namespace.Prefix(names...); ok {
 		return true, prefix
 	}
-	return false, ScopePrefix{}
+	return false, Prefix{}
 }
 
-func (s *ScopePrefix) Apply(extnames ...string) (bool, Scope) {
+func (s *Prefix) Apply(extnames ...string) (bool, Scope) {
 	names := stringArrayCopyConcat(s.names, extnames)
 	prefix := s.namespace.ruleOfPrefixConcat(names...)
 	if ok, scope := s.namespace.Apply(prefix); ok {

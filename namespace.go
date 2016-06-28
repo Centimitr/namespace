@@ -20,9 +20,11 @@ import (
 
 type Namespace struct {
 	scopes             map[string]Scope
-	scopePrefixes      map[string]ScopePrefix
+	Prefixes           map[string]Prefix
 	ruleOfGet          func(scope, name string) string
 	ruleOfPrefixConcat func(prefixes ...string) string
+	// a kv like structs like map that this namespace bind to
+	binding Interface
 }
 
 func (n *Namespace) hasNoConflict(scopeName string) bool {
@@ -78,7 +80,7 @@ func (n *Namespace) DirectGet(scope, name string) string {
 // init maps and ruleOfGet functions
 func (n *Namespace) Init() {
 	n.scopes = make(map[string]Scope)
-	n.scopePrefixes = make(map[string]ScopePrefix)
+	n.Prefixes = make(map[string]Prefix)
 	n.ruleOfGet = func(scope, name string) string {
 		return scope + ":" + name
 	}
@@ -87,16 +89,20 @@ func (n *Namespace) Init() {
 	}
 }
 
-func (n *Namespace) NewPrefix(names ...string) (ok bool, _ ScopePrefix) {
+func (n *Namespace) Prefix(names ...string) (ok bool, _ Prefix) {
 	key := getPrefixNamesKey(names)
-	if _, ok := n.scopePrefixes[key]; !ok {
-		n.scopePrefixes[key] = ScopePrefix{
+	if _, ok := n.Prefixes[key]; !ok {
+		n.Prefixes[key] = Prefix{
 			names:     names,
 			namespace: n,
 		}
-		return true, n.scopePrefixes[key]
+		return true, n.Prefixes[key]
 	}
-	return false, ScopePrefix{}
+	return false, Prefix{}
+}
+
+func (n *Namespace) Bind(binding Interface) {
+	n.binding = binding
 }
 
 func New() Namespace {

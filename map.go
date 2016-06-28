@@ -12,20 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package maps
+package namespace
 
-import (
-	. "github.com/Centimitr/namespace"
-)
-
-type MapScope struct {
-	m *Map
-	Scope
+type Map struct {
+	m map[string]interface{}
 }
 
-func (this *MapScope) Handler(name string) MapHandler {
-	return MapHandler{
-		key: this.Scope.Get(name),
-		m:   this.m,
-	}
+func (this *Map) Has(key string) bool {
+	_, ok := this.m[key]
+	return ok
+}
+
+func (this *Map) Get(key string) (interface{}, bool) {
+	value, ok := this.m[key]
+	return value, ok
+}
+
+func (this *Map) MustGet(key string) interface{} {
+	value, _ := this.m[key]
+	return value
+}
+
+func (this *Map) Set(key string, value interface{}) {
+	this.m[key] = value
+}
+
+func (this *Map) Delete(key string) {
+	delete(this.m, key)
+}
+
+func (this *Map) Init() {
+	this.m = make(map[string]interface{})
 }
