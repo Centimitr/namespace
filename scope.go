@@ -26,11 +26,11 @@ func (s *Scope) Key(name string) string {
 	return s.namespace.keyConcatRule(s.name, name)
 }
 
-func (s *Scope) Handler(name string) Handler {
+func (s *Scope) Handler(name string) *Handler {
 	if s.namespace.binding == nil {
 		panic("Namespace hasn't have a binding yet.")
 	}
-	return Handler{
+	return &Handler{
 		key:       name,
 		Interface: s.namespace.binding,
 	}
