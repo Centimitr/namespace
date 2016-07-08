@@ -14,6 +14,10 @@
 
 package namespace
 
+import (
+	"errors"
+)
+
 type Scope struct {
 	// scope's name
 	name string
@@ -34,4 +38,14 @@ func (s *Scope) Handler(name string) *Handler {
 		key:       name,
 		Interface: s.namespace.binding,
 	}
+}
+
+var NotBindable = errors.New("Given value isn't bindable(contain a namespace.Binding struct).")
+
+func (s *Scope) Bind(binding interface{}) error {
+	if binding, ok := binding.(Binding); ok {
+		binding.Bind(s)
+		return nil
+	}
+	return NotBindable
 }
