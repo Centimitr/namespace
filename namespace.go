@@ -24,7 +24,7 @@ type Namespace struct {
 	keyConcatRule    func(scope, name string) string
 	prefixConcatRule func(prefixes ...string) string
 	// a kv like structs like map that this namespace bind to
-	binding Interface
+	// binding Interface
 }
 
 func (n *Namespace) hasNoConflict(scopeName string) bool {
@@ -97,9 +97,9 @@ func (n *Namespace) Prefix(names ...string) (ok bool, _ Prefix) {
 	return false, Prefix{}
 }
 
-func (n *Namespace) Bind(binding Interface) {
-	n.binding = binding
-}
+// func (n *Namespace) Bind(binding Interface) {
+// 	n.binding = binding
+// }
 
 func New() Namespace {
 	ns := Namespace{}

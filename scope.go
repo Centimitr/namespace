@@ -15,7 +15,7 @@
 package namespace
 
 import (
-	"errors"
+// "errors"
 )
 
 type Scope struct {
@@ -30,22 +30,22 @@ func (s *Scope) Key(name string) string {
 	return s.namespace.keyConcatRule(s.name, name)
 }
 
-func (s *Scope) Handler(name string) *Handler {
-	if s.namespace.binding == nil {
-		panic("Namespace hasn't have a binding yet.")
-	}
-	return &Handler{
-		key:       name,
-		Interface: s.namespace.binding,
-	}
-}
+// func (s *Scope) Handler(name string) *Handler {
+// 	if s.namespace.binding == nil {
+// 		panic("Namespace hasn't have a binding yet.")
+// 	}
+// 	return &Handler{
+// 		key:       name,
+// 		Interface: s.namespace.binding,
+// 	}
+// }
 
-var NotBindable = errors.New("Given value isn't bindable(contain a namespace.Binding struct).")
+// var NotBindable = errors.New("Given value isn't bindable(contain a namespace.Binding struct).")
 
-func (s *Scope) Bind(binding interface{}) error {
-	if binding, ok := binding.(Binding); ok {
-		binding.Bind(s)
-		return nil
-	}
-	return NotBindable
-}
+// func (s *Scope) Bind(binding interface{}) error {
+// 	if binding, ok := binding.(Binding); ok {
+// 		binding.Bind(s)
+// 		return nil
+// 	}
+// 	return NotBindable
+// }

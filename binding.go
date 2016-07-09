@@ -14,30 +14,30 @@
 
 package namespace
 
-import (
-	"errors"
-)
+// import (
+// 	"errors"
+// )
 
-var lackBinding = errors.New("No scope has been binded to this binding.")
+// var lackBinding = errors.New("No scope has been binded to this binding.")
 
-type Binding struct {
-	scope *Scope
-}
+// type Binding struct {
+// 	scope *Scope
+// }
 
-func (b *Binding) Bind(s *Scope) {
-	b.scope = s
-}
+// func (b *Binding) Bind(s *Scope) {
+// 	b.scope = s
+// }
 
-func (b *Binding) Key(key string) (string, error) {
-	if b.scope == nil {
-		return "", lackBinding
-	}
-	return b.scope.Key(key), nil
-}
+// func (b *Binding) Key(key string) (string, error) {
+// 	if b.scope == nil {
+// 		return "", lackBinding
+// 	}
+// 	return b.scope.Key(key), nil
+// }
 
-func (b *Binding) MustKey(key string) string {
-	if b.scope == nil {
-		return key
-	}
-	return b.scope.Key(key)
-}
+// func (b *Binding) MustKey(key string) string {
+// 	if b.scope == nil {
+// 		return key
+// 	}
+// 	return b.scope.Key(key)
+// }

@@ -14,31 +14,31 @@
 
 package namespace
 
-type Interface interface {
-	Has(key string) bool
-	Get(key string) interface{}
-	Set(key string, value interface{})
-	Delete(key string)
-	Init()
-}
+// type Interface interface {
+// 	Has(key string) bool
+// 	Get(key string) interface{}
+// 	Set(key string, value interface{})
+// 	Delete(key string)
+// 	Init()
+// }
 
-type Handler struct {
-	key string
-	Interface
-}
+// type Handler struct {
+// 	key string
+// 	Interface
+// }
 
-func (h *Handler) Has() bool {
-	return h.Interface.Has(h.key)
-}
+// func (h *Handler) Has() bool {
+// 	return h.Interface.Has(h.key)
+// }
 
-func (h *Handler) Get() interface{} {
-	return h.Interface.Get(h.key)
-}
+// func (h *Handler) Get() interface{} {
+// 	return h.Interface.Get(h.key)
+// }
 
-func (h *Handler) Set(value interface{}) {
-	h.Interface.Set(h.key, value)
-}
+// func (h *Handler) Set(value interface{}) {
+// 	h.Interface.Set(h.key, value)
+// }
 
-func (h *Handler) Delete() {
-	h.Interface.Delete(h.key)
-}
+// func (h *Handler) Delete() {
+// 	h.Interface.Delete(h.key)
+// }
