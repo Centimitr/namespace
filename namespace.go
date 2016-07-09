@@ -97,10 +97,6 @@ func (n *Namespace) Prefix(names ...string) (ok bool, _ Prefix) {
 	return false, Prefix{}
 }
 
-// func (n *Namespace) Bind(binding Interface) {
-// 	n.binding = binding
-// }
-
 func New() Namespace {
 	ns := Namespace{}
 	ns.Init()
